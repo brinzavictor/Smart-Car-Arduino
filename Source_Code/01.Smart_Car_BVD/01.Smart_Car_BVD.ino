@@ -70,7 +70,7 @@ void go(byte direction, unsigned short speed)
             digitalWrite(M_LEFT_F, HIGH);
             digitalWrite(M_LEFT_B, HIGH);
             digitalWrite(M_RIGHT_F, HIGH);
-            digitalWrite(M_RIGHT_B, HIGH);           
+            digitalWrite(M_RIGHT_B, HIGH);
         }
         break;
         case 2:
@@ -79,7 +79,7 @@ void go(byte direction, unsigned short speed)
             analogWrite(M_LEFT_F, speed - CORRECTION_SPEED);
             digitalWrite(M_LEFT_B, LOW);
             analogWrite(M_RIGHT_F, speed);
-            digitalWrite(M_RIGHT_B, LOW);      
+            digitalWrite(M_RIGHT_B, LOW);
         }
         break;
         case 3:
@@ -88,7 +88,7 @@ void go(byte direction, unsigned short speed)
             digitalWrite(M_LEFT_F, LOW);
             analogWrite(M_LEFT_B, speed - CORRECTION_SPEED);
             digitalWrite(M_RIGHT_F, LOW);
-            analogWrite(M_RIGHT_B, speed);         
+            analogWrite(M_RIGHT_B, speed);
         }
         break;
         case 4:
@@ -97,7 +97,7 @@ void go(byte direction, unsigned short speed)
             digitalWrite(M_LEFT_F, LOW);
             digitalWrite(M_LEFT_B, HIGH);
             digitalWrite(M_RIGHT_F, HIGH);
-            digitalWrite(M_RIGHT_B, LOW);         
+            digitalWrite(M_RIGHT_B, LOW);
         }
         break;        
         case 5:
@@ -124,7 +124,7 @@ void go(byte direction, unsigned short speed)
             analogWrite(M_LEFT_F, speed);
             digitalWrite(M_LEFT_B, LOW);
             analogWrite(M_RIGHT_F, speed - TURN_COEFFICIENT);
-            digitalWrite(M_RIGHT_B, LOW);          
+            digitalWrite(M_RIGHT_B, LOW);
         }
         break;
         default:
@@ -164,6 +164,17 @@ void connect_WiFi()
         Serial.print("IP Adress: ");
         Serial.println(WiFi.localIP());
 
+        /* All Handlers */
+        server.on("/", handle_index);
+        server.on("/STOP", handle_stop);
+        server.on("/AHEAD_SLOW", handle_ahead_slow);
+        server.on("/AHEAD_FULL", handle_ahead_full);
+        server.on("/BACK", handle_back);
+        server.on("/SPIN_LEFT", handle_spin_left);
+        server.on("/SPIN_RIGHT", handle_spin_right);
+        server.on("/TURN_LEFT", handle_turn_left);
+        server.on("/TURN_RIGHT", handle_turn_right);
+
         server.begin();
         Serial.println("Server is ON");
     }
@@ -171,4 +182,74 @@ void connect_WiFi()
     {
         Serial.println("ERROR!");
     }
+}
+
+void handle_index()
+{
+    server.send(200, "text/html", INDEX_PAGE);
+    go(0,0);
+}
+
+void handle_stop()
+{
+    server.send(200, "text/html", INDEX_PAGE);
+    go(1,0);
+    delay(200);
+    go(0,0);
+    server.sendHeader("Location","/");
+}
+
+void handle_ahead_slow()
+{
+    server.send(200, "text/html", INDEX_PAGE);
+    go(2,823);
+}
+
+void handle_ahead_full()
+{
+    server.send(200, "text/html", INDEX_PAGE);
+    go(2,1023);
+}
+
+void handle_back()
+{
+    server.send(200, "text/html", INDEX_PAGE);
+    go(3,1023);
+    delay(300);
+    go(0,0);
+    server.sendHeader("Location","/");
+}
+
+void handle_spin_left()
+{
+    server.send(200, "text/html", INDEX_PAGE);
+    go(4,0);
+    delay(150);
+    go(0,0);
+    server.sendHeader("Location","/"); 
+}
+
+void handle_spin_right()
+{
+    server.send(200, "text/html", INDEX_PAGE);
+    go(5,0);
+    delay(150);
+    go(0,0);
+    server.sendHeader("Location","/"); 
+}
+
+void handle_turn_left()
+{
+    server.send(200, "text/html", INDEX_PAGE);
+    go(6,0);
+    delay(200);
+    server.sendHeader("Location","/AHEAD_SLOW");
+}
+
+void handle_turn_right()
+{
+    server.send(200, "text/html", INDEX_PAGE);
+    go(7,0);
+    delay(200);
+    server.sendHeader("Location","/AHEAD_SLOW");
 }
