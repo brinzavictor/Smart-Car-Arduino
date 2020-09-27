@@ -1,6 +1,12 @@
 /* Includes --------------------------------------------*/
-#include "Arduino.h"
-#include "PCF8574.h"
+/* Libraris */
+#include <Arduino.h>
+#include <PCF8574.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
+/* Headers */
+//#include "index.h"
 
 /* Define ----------------------------------------------*/
 /* DC Motors pins */
@@ -15,11 +21,16 @@
 /* Set i2c address */
 PCF8574 pcf8574(0x39);
 
+/* Set port 80 for server */
+ESP8266WebServer server(80);
+
 /*********************************************************/
 /** Init ------------------------------------------------*/
 /*********************************************************/
 void setup() 
 {
+    Serial.begin(115200);
+    
     /* Set DC Motors Pins */
     pinMode(M_LEFT_F, OUTPUT);
     pinMode(M_LEFT_B, OUTPUT);
