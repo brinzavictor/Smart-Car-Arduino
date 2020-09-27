@@ -6,7 +6,7 @@
 #include <ESP8266WebServer.h>
 
 /* Headers */
-//#include "index.h"
+#include "index.h"
 
 /* Define ----------------------------------------------*/
 /* DC Motors */
@@ -15,7 +15,7 @@
 #define M_RIGHT_F D7
 #define M_RIGHT_B D8
 #define CORRECTION_SPEED 20
-#define TURN_COEFFICIENT 60
+#define TURN_COEFFICIENT 200
 
 /* Setup -----------------------------------------------*/
 /* Set i2c address */
@@ -46,6 +46,7 @@ void loop()
     /* Ex I2C Pins
     pcf8574.digitalWrite(P0, HIGH);
     */
+    server.handleClient();
 }
 
 /*********************************************************/
